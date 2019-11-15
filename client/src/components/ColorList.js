@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 //import util
-import axiosWithAuth from '../utils/AxiosWithAuth'
+
 import AxiosWithAuth from "../utils/AxiosWithAuth";
 
 const initialColor = {
@@ -11,25 +11,29 @@ const initialColor = {
 };
 
 const ColorList = ({ colors, updateColors }) => {
+  // console.log deconstructed props^^
   console.log(colors);
-console.log(updateColors)
+  console.log(updateColors);
 
 
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
+  // when deleting, line 20 triggers in the console.log
+  // an idea is to filter through colors and remove editColor
   const editColor = color => {
     console.log(color)
     setEditing(true);
     setColorToEdit(color);
   };
 
-
+  // const fetchColorsWithoutDelete =
   const saveEdit = e => {
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
-    e.preventDefault();
+    //the info is coming from the axios response....need to manipulate 
+    e.preventDefault()
     console.log(e)
     AxiosWithAuth()
       .put(`/api/colors/${colorToEdit.id}`, colorToEdit)
@@ -39,22 +43,22 @@ console.log(updateColors)
         updateColors([...newArray, res.data])
         setEditing(false)
       })
-      .catch(err => console.log(err.response))  
+      .catch(err => console.log(err.response))
   };
 
   const deleteColor = color => {
     // make a delete request to delete this color
-
+    
     console.log(color)
 
     AxiosWithAuth()
       .delete(`api/colors/${color.id}`)
-      .then (deleteColor => {
+      .then( deleteColor => {
         console.log(deleteColor)
-        updateColors(color.filter(colorItem.id !== color.id))
+        updateColors(colors.filter(colorItem => colorItem.id !== color.id))
         setEditing(false)
       })
-      .catch(err => console.log(`There was an error deleting.`, err))
+      .catch(err => console.log(`There was an error deleting. ColorList.js`, err))
   };
 
   return (
